@@ -1,82 +1,153 @@
-using System; // Import standard .NET system types (not strictly needed here but common in C# files)
-using UnityEngine; // Import Unity-specific classes like MonoBehaviour, GameObject, Collider, and print
-using TMPro; // Import TextMeshPro namespace for advanced text handling (not used in this script but often included in Unity projects for UI text)
+using System;
+using UnityEngine;
+using TMPro;
 
-public class PlayerScript : MonoBehaviour
+public class PlayerScript: MonoBehaviour
 {
-    CollectibleScript currentCollectible; // Store the collectible object the player is currently able to interact with
-
-    DoorScript currentDoor; // Store the door object the player is currently able to interact with
-
-    int playerScore = 0; // Keep track of how many points the player has collected so far
-
-    [SerializeField]
-    int targetScore = 0; // The goal score required to complete a task, editable from the Unity Inspector
+    int flashlightScore = 0; // Store the player's score from collecting flashlights, initialized to 0 at the start of the game
+    int documentScore = 0; // Store the player's score from collecting documents, initialized to 0 at the start of the game
+    int keyScore = 0; // Store the player's score from collecting keys, initialized to 0 at the start of the game
+    int computerScore = 0; // Store the player's score from collecting computers, initialized to 0 at the start of the game
+    int thumbdriveScore = 0; // Store the player's score from collecting thumb drives, initialized to 0 at the start of the game
 
     [SerializeField]
-    TextMeshProUGUI scoreText; // Reference to the UI text element that displays the player's score
+    TextMeshProUGUI scoreText; // Reference to the UI text element that displays the player's score, assigned from the Unity Inspector
+
+    [SerializeField]
+    float interactDistance = 3f; // Maximum distance at which the player can interact with objects, editable from the Unity Inspector
+
+    Camera playerCamera; // Reference to the player's camera, used for raycasting to detect interactable objects
 
     void Start()
     {
-        scoreText.text = "Score: " + playerScore; // Initialize the score display to show the starting score of 0 when the game begins
+        UpdateScoreUI(); // Initialize the score display at the start of the game
+        playerCamera = Camera.main; // Get the main camera in the scene, which is assumed to be the player's camera
     }
 
-    void OnInteract() // Custom interaction method called when the player performs an interact action
+    void Update()
     {
-        if(currentCollectible != null) // Only collect something if the player is currently near a collectible
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            playerScore += currentCollectible.collectibleScore; // Add the collectible's score value to the player's total score
-            print("Player has collected " + playerScore + " points"); // Print the updated score to the console for debugging or feedback
-            scoreText.text = "Score: " + playerScore; // Update the on-screen score display to reflect the new score after collecting an item
-            currentCollectible.Collect(); // Call the Collect method on the collectible script to handle its collection logic
-            currentCollectible = null; // Clear the reference so the player no longer has an active collectible selected 
+            OnInteract();
+        }
+    }
+
+    void OnInteract()
+    {
+        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, interactDistance))
+        {
+            Debug.Log("Raycast hit: " + hit.collider.name);
+
+            // Flashlight collectible
+            if (hit.collider.CompareTag("Flashlight"))
+            {
+            Collectible collectible = hit.collider.GetComponentInParent<Collectible>();
+            if (collectible != null)
+            {
+                flashlightScore += collectible.collectibleScore; // Increase the player's score by the value of the collected item
+                Debug.Log("Flashlight score: " + flashlightScore); // Log the player's current flashlight score after collecting an item
+                UpdateScoreUI(); // Update the score display
+                collectible.Collect(); // Call the Collect method on the collectible to handle its collection logic (e.g., play sound, destroy object)
+                return; // Exit the method after collecting an item to prevent multiple interactions in one frame
+            }
+            }
+             // Document collectible
+            if (hit.collider.CompareTag("Document"))
+            {
+                Collectible collectible = hit.collider.GetComponentInParent<Collectible>();
+                if (collectible != null)
+                {
+                documentScore += collectible.collectibleScore; // Increase the player's score by the value of the collected item
+                Debug.Log("Document score: " + documentScore); // Log the player's current document score after collecting an item
+                UpdateScoreUI(); // Update the score display
+                collectible.Collect(); // Call the Collect method on the collectible to handle its collection logic (e.g., play sound, destroy object)
+                return; // Exit the method after collecting an item to prevent multiple interactions in one frame
+                }
+            }
+            // Key collectible
+            if (hit.collider.CompareTag("Key"))
+            {
+                Collectible collectible = hit.collider.GetComponentInParent<Collectible>();
+                if (collectible != null)
+                {
+                keyScore += collectible.collectibleScore; // Increase the player's score by the value of the collected item
+                Debug.Log("Key score: " + keyScore); // Log the player's current key score after collecting an item
+                UpdateScoreUI(); // Update the score display
+                collectible.Collect(); // Call the Collect method on the collectible to handle its collection logic (e.g., play sound, destroy object)
+                return; // Exit the method after collecting an item to prevent multiple interactions in one frame
+                }
+            }
+            // Computer collectible
+            if (hit.collider.CompareTag("Computer"))
+            {
+                Collectible collectible = hit.collider.GetComponentInParent<Collectible>();
+                if (collectible != null)
+                {
+                computerScore += collectible.collectibleScore; // Increase the player's score by the value of the collected item
+                Debug.Log("Computer score: " + computerScore); // Log the player's current computer score after collecting an item
+                UpdateScoreUI(); // Update the score display
+                collectible.Collect(); // Call the Collect method on the collectible to handle its collection logic (e.g., play sound, destroy object)
+                return; // Exit the method after collecting an item to prevent multiple interactions in one frame
+                }
+            }
+            // Thumbdrive collectible
+            if (hit.collider.CompareTag("Thumbdrive"))
+            {
+                Collectible collectible = hit.collider.GetComponentInParent<Collectible>();
+                if (collectible != null)
+                {
+                thumbdriveScore += collectible.collectibleScore; // Increase the player's score by the value of the collected item
+                Debug.Log("Thumbdrive score: " + thumbdriveScore); // Log the player's current thumbdrive score after collecting an item
+                UpdateScoreUI(); // Update the score display
+                collectible.Collect(); // Call the Collect method on the collectible to handle its collection logic (e.g., play sound, destroy object)
+                return; // Exit the method after collecting an item to prevent multiple interactions in one frame
+                }
+            }
+            // Door
+            DoorScript door = hit.collider.GetComponentInParent<DoorScript>();
+            if (door != null)
+            {
+                // Door1 unlocks if player has collected a flashlight
+                if (hit.collider.CompareTag("Door1") && flashlightScore >= 1)
+                {
+                    door.Interact(); // Call the Interact method on the door to handle opening or closing it
+                    Debug.Log("Door1 is unlocked. You can now enter."); // Log a message if the player interacts with Door1 and has the required flashlight
+                }
+                else if (hit.collider.CompareTag("Door2") && keyScore >= 1)
+                {
+                    door.Interact(); // Call the Interact method on the door to handle opening or closing it
+                    Debug.Log("Door2 is unlocked. You can now enter."); // Log a message if the player interacts with Door2 and has the required key
+                }
+                else
+                {
+                    Debug.Log("Door is locked. Search the area for the required item."); // Log a message if the player tries to interact with a door without having collected the required item
+                }
+                return; // Exit the method after interacting with a door to prevent multiple interactions in one frame
+            }
+            // Check if we hit the goal area
+            int totalScore = flashlightScore + documentScore + keyScore + computerScore + thumbdriveScore; // Calculate the player's total score by summing all score types
+            if (hit.collider.CompareTag("GoalArea"))
+            {
+                if (flashlightScore >= 1 && documentScore >= 1 && keyScore >= 1 && computerScore >= 1 && thumbdriveScore >= 1)
+                {
+                    Debug.Log("Player Successfully Retrieved all Items!" + totalScore + " points"); // Log a winning message if the player reaches the goal area with enough points
+                }
+                else
+                {
+                    Debug.Log("Player have not Retrieved all Items. Current score: " + totalScore); // Log a message if the player reaches the goal area but does not have enough points
+                }
+            }
         }
         else
         {
-            print("Error: No CollectibleScript found"); // Log an error in the Unity Console if the collectible is missing its data component
-            //return; // Exit the method early because we cannot safely collect the item without the script
-        }
-
-        if(currentDoor != null) // Only interact with a door if the player is currently near one
-        {
-            currentDoor.Interact(); // Call the Interact method on the door script to handle its interaction logic            
-        }
-        else
-        {
-            print("Error: No DoorScript found"); // Log an error in the Unity Console if the door is missing its data component
-            //return;
+            Debug.Log("No interactable object within range"); // Log a message if the player tries to interact but there is no object within the specified distance
         }
     }
 
-    void OnTriggerEnter(Collider other) // Unity event called when another collider enters this GameObject's trigger collider
+    void UpdateScoreUI()
     {
-        if(other.gameObject.tag == "Collectible") // Check if the object entering the trigger is tagged as a collectible
-        {
-            currentCollectible = other.GetComponentInParent<CollectibleScript>(); // Store the collectible script so the player can interact with it later
-        }
-
-        if(other.gameObject.tag == "Door") // Check if the object entering the trigger is tagged as a door
-        {
-            currentDoor = other.GetComponentInParent<DoorScript>(); // Store the door script so the player can interact with it later
-        }
-
-        if(other.gameObject.tag == "GoalArea" && playerScore >= targetScore) // Check if the player entered the goal area and has enough points
-        {
-            print("Player entered trigger zone with " + playerScore + " points"); // Print a success message when the player reaches the goal with enough score
-        }
+        scoreText.text = "Flashlight: " + flashlightScore + "\nDocument: " + documentScore + "\nKey: " + keyScore + "\nComputer: " + computerScore + "\nThumbdrive: " + thumbdriveScore; // Update the score display to show all score types
     }
-
-    void OnTriggerExit(Collider other) // Unity event called when another collider leaves this GameObject's trigger collider
-    {
-        if(other.gameObject == currentCollectible) // If the collectible leaving the trigger is the one we were tracking
-        {
-            currentCollectible = null; // Clear the current collectible because it is no longer in range
-        }
-
-        if(other.gameObject == currentDoor) // If the door leaving the trigger is the one we were tracking
-        {
-            currentDoor = null; // Clear the current door because it is no longer in range
-        }
-    }
-
 }

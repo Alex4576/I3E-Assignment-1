@@ -5,9 +5,15 @@ TagManager:
   serializedVersion: 3
   tags:
   - CinemachineTarget
-  - Collectible
   - GoalArea
   - Door
+  - Document
+  - Flashlight
+  - Key
+  - Computer
+  - Thumbdrive
+  - Door1
+  - Door2
   layers:
   - Default
   - TransparentFX
