@@ -4,6 +4,7 @@ using TMPro;
 
 public class PlayerScript: MonoBehaviour
 {
+    // Score variables for each type of collectible, initialized to 0 at the start of the game
     int flashlightScore = 0; // Store the player's score from collecting flashlights, initialized to 0 at the start of the game
     int documentScore = 0; // Store the player's score from collecting documents, initialized to 0 at the start of the game
     int keyScore = 0; // Store the player's score from collecting keys, initialized to 0 at the start of the game
@@ -18,10 +19,23 @@ public class PlayerScript: MonoBehaviour
 
     Camera playerCamera; // Reference to the player's camera, used for raycasting to detect interactable objects
 
+    // Player's Health
+    [Header("Player Health")]
+    [SerializeField]
+    public int maxHealth = 100; // Player's current health, editable from the Unity Inspector
+    private int currentHealth; // Player's current health, initialized to the maximum health
+
+    [SerializeField] TextMeshProUGUI healthText; // Reference to the UI text element that displays the player's health, assigned from the Unity Inspector
     void Start()
     {
         UpdateScoreUI(); // Initialize the score display at the start of the game
         playerCamera = Camera.main; // Get the main camera in the scene, which is assumed to be the player's camera
+
+        currentHealth = maxHealth; // Set the player's current health to the maximum health at the start of the game
+        if (healthText != null)
+        {
+            healthText.text = "Health: " + currentHealth + "/" + maxHealth; // Initialize the health display to show the player's current health and maximum health
+        }
     }
 
     void Update()
@@ -29,6 +43,24 @@ public class PlayerScript: MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             OnInteract();
+        }
+    }
+
+    // Damage
+    public void TakeDamage(int damageAmount)
+    {
+        currentHealth -= damageAmount; // Reduce the player's current health by the specified damage amount
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Ensure the player's health does not go below 0 or above the maximum health
+        if (healthText != null)
+        {
+            healthText.text = "Health: " + currentHealth + "/" + maxHealth; // Update the health display to show the current health and maximum health
+        }
+        Debug.Log("Player took " + damageAmount + " damage. Current health: " + currentHealth); // Log a message indicating how much damage the player took and their current health
+
+        if (currentHealth <= 0)
+        {
+            Debug.Log("You died."); // Log a message when the player's health reaches 0 or below, indicating that the player has died
+            // Additional logic for player death can be added here (e.g., respawn, game over screen)
         }
     }
 
@@ -149,5 +181,18 @@ public class PlayerScript: MonoBehaviour
     void UpdateScoreUI()
     {
         scoreText.text = "Flashlight: " + flashlightScore + "\nDocument: " + documentScore + "\nKey: " + keyScore + "\nComputer: " + computerScore + "\nThumbdrive: " + thumbdriveScore; // Update the score display to show all score types
+    }
+
+    // Damage over time
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Damage"))
+        {
+            DamageObject dmg = other.GetComponent<DamageObject>();
+            if (dmg != null)
+            {
+                TakeDamage(dmg.damageAmount); // Call the TakeDamage method with the damage amount from the DamageObject when the player enters a trigger with the "Damage" tag
+            }
+        }
     }
 }
