@@ -27,9 +27,10 @@ public class PlayerScript: MonoBehaviour
 
     [SerializeField] TextMeshProUGUI healthText; // Reference to the UI text element that displays the player's health, assigned from the Unity Inspector
     
-    // Lose Screen
-    [Header("Lose Screen")]
-    [SerializeField] GameObject LoseScreen; // Reference to the game object that represents the lose screen, assigned from the Unity Inspector
+    // Screens
+    [Header("Screens")]
+    [SerializeField] GameObject loseScreen; // Reference to the game object that represents the lose screen, assigned from the Unity Inspector
+    [SerializeField] GameObject winScreen; // Reference to the game object that represents the win screen, assigned from the Unity Inspector
     [SerializeField] GameObject dotImage; // Reference to the game object that represents the dot image, assigned from the Unity Inspector, used for guide for raycasting    
     void Start()
     {
@@ -72,13 +73,25 @@ public class PlayerScript: MonoBehaviour
 
     void ShowLoseScreen()
     {
-        if (LoseScreen != null)
+        if (loseScreen != null)
         {
-            LoseScreen.SetActive(true);
+            loseScreen.SetActive(true);
             if (scoreText != null) scoreText.gameObject.SetActive(false); // Hide the score text when the lose screen is shown
             if (healthText != null) healthText.gameObject.SetActive(false); // Hide the health text when the lose screen is shown
             if (dotImage != null) dotImage.SetActive(false); // Hide the dot image when the lose screen is shown
             Time.timeScale = 0f ; // Pause the game when the lose screen is shown
+        }
+    }
+
+    void ShowWinScreen()
+    {
+        if (winScreen != null)
+        {
+            winScreen.SetActive(true);
+            if (scoreText != null) scoreText.gameObject.SetActive(false); // Hide the score text when the win screen is shown
+            if (healthText != null) healthText.gameObject.SetActive(false); // Hide the health text when the win screen is shown
+            if (dotImage != null) dotImage.SetActive(false); // Hide the dot image
+            Time.timeScale = 0f ; // Pause the game when the win screen is shown
         }
     }
 
@@ -89,6 +102,17 @@ public class PlayerScript: MonoBehaviour
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
             Debug.Log("Raycast hit: " + hit.collider.name);
+
+            // Wooden Crate
+            if (hit.collider.CompareTag("Crate"))
+            {
+                Collectible collectible = hit.collider.GetComponentInParent<Collectible>();
+            if (collectible != null)
+            {
+                collectible.Collect(); // Call the Collect method on the collectible to handle its collection logic (e.g., play sound, destroy object)
+                return; // Exit the method after collecting an item to prevent multiple interactions in one frame
+            }
+            }
 
             // Flashlight collectible
             if (hit.collider.CompareTag("Flashlight"))
@@ -176,17 +200,18 @@ public class PlayerScript: MonoBehaviour
                 }
                 return; // Exit the method after interacting with a door to prevent multiple interactions in one frame
             }
-            // Check if we hit the goal area
-            int totalScore = flashlightScore + documentScore + keyScore + computerScore + thumbdriveScore; // Calculate the player's total score by summing all score types
+
+            // Check if we hit the goal area as well as collected all required items
             if (hit.collider.CompareTag("GoalArea"))
             {
-                if (flashlightScore >= 1 && documentScore >= 1 && keyScore >= 1 && computerScore >= 1 && thumbdriveScore >= 1)
+                if (flashlightScore >= 1 && documentScore >= 6 && keyScore >= 2 && computerScore >= 1 && thumbdriveScore >= 2)
                 {
-                    Debug.Log("Player Successfully Retrieved all Items!" + totalScore + " points"); // Log a winning message if the player reaches the goal area with enough points
+                    Debug.Log("Congratulations! You have collected all required items and exited the building."); // Log a winning message if the player reaches the goal area with enough points
+                    ShowWinScreen(); // Call a method to show the win screen (this method would need to be implemented separately)
                 }
                 else
                 {
-                    Debug.Log("Player have not Retrieved all Items. Current score: " + totalScore); // Log a message if the player reaches the goal area but does not have enough points
+                    Debug.Log("Please collect all required items before exiting."); // Log a message if the player reaches the goal area but does not have enough points
                 }
             }
         }
@@ -198,7 +223,7 @@ public class PlayerScript: MonoBehaviour
 
     void UpdateScoreUI()
     {
-        scoreText.text = "Flashlight: " + flashlightScore + "\nDocument: " + documentScore + "\nKey: " + keyScore + "\nComputer: " + computerScore + "\nThumbdrive: " + thumbdriveScore; // Update the score display to show all score types
+        scoreText.text = "Flashlight: " + flashlightScore + "/1\nDocument: " + documentScore + "/6\nKey: " + keyScore + "/2\nComputer: " + computerScore + "/1\nThumbdrive: " + thumbdriveScore + "/2"; // Update the score display to show all score types
     }
 
     // Damage over time

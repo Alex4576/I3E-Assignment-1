@@ -16,6 +16,7 @@ TagManager:
   - Door2
   - Damage
   - DamageOverTime
+  - Crate
   layers:
   - Default
   - TransparentFX

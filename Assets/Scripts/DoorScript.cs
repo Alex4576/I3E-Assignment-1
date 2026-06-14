@@ -13,15 +13,22 @@ public class DoorScript : MonoBehaviour
 
     public void Interact()
     {
-        if(myAnimator != null)
+       if (myAnimator != null && !isOpen)
         {
-            if(!isOpen)
-            // Play the open or close animation
-                myAnimator.SetTrigger("DoorOpen");
-            else
-                myAnimator.SetTrigger("DoorClose");
-
-            isOpen = !isOpen; // Toggle the door state for the next interaction
+            myAnimator.SetTrigger("DoorOpen"); // Trigger the "DoorOpen" animation on the animator to play the door opening animation when the player interacts with it
+            isOpen = true; // Set the isOpen flag to true to indicate that the door has been opened, preventing it from being opened again
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (isOpen && other.CompareTag("Player"))
+        {
+            if (myAnimator != null)
+            {
+                myAnimator.SetTrigger("DoorClose"); // Trigger the "DoorClose" animation on the animator to play the door closing animation when the player exits the trigger area of the door
+                isOpen = false; // Set the isOpen flag back to false to allow the door to be opened again in the future
+            }
+    }
     }
 }
