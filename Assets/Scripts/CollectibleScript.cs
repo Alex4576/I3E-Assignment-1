@@ -1,3 +1,8 @@
+/*
+*Author: Alex
+*Date: 14/6/2026
+*Description: This script defines the behavior of collectible items in the game. It handles the rotation of the collectible for visual appeal, the collection process when the player interacts with it, and plays a sound effect upon collection.
+*/
 using UnityEngine;
 
 public class Collectible : MonoBehaviour

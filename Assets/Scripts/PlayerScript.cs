@@ -1,3 +1,9 @@
+/*
+*Author: Alex
+*Date: 14/6/2026
+*Description: This script defines the behavior of the player in the game. It handles player movement, interactions such as raycasting, and health management.
+*/
+
 using System;
 using UnityEngine;
 using TMPro;

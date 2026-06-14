@@ -1,3 +1,9 @@
+/*
+*Author: Alex
+*Date: 14/6/2026
+*Description: This script defines the behavior of doors in the game. It handles the opening and closing animations when the player interacts with the door.
+*/
+
 using UnityEngine;
 
 public class DoorScript : MonoBehaviour

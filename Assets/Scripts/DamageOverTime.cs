@@ -1,3 +1,9 @@
+/*
+*Author: Alex
+*Date: 14/6/2026
+*Description: This script defines the behavior of damage over time areas in the game. It applies damage to the player continuously while they are within the area.
+*/
+
 using UnityEngine;
 using System.Collections;
 
