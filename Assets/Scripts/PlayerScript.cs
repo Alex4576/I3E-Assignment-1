@@ -31,6 +31,7 @@ public class PlayerScript: MonoBehaviour
     [Header("Screens")]
     [SerializeField] GameObject loseScreen; // Reference to the game object that represents the lose screen, assigned from the Unity Inspector
     [SerializeField] GameObject winScreen; // Reference to the game object that represents the win screen, assigned from the Unity Inspector
+    [SerializeField] TextMeshProUGUI finalHealth; // Reference to the UI text element that displays the player's final health on the win screen, assigned from the Unity Inspector
     [SerializeField] GameObject dotImage; // Reference to the game object that represents the dot image, assigned from the Unity Inspector, used for guide for raycasting    
     void Start()
     {
@@ -88,6 +89,7 @@ public class PlayerScript: MonoBehaviour
         if (winScreen != null)
         {
             winScreen.SetActive(true);
+            finalHealth.text = "Your Final Health: " + currentHealth + "/" + maxHealth; // Update the final health display on the win screen to show the player's current health and maximum health
             if (scoreText != null) scoreText.gameObject.SetActive(false); // Hide the score text when the win screen is shown
             if (healthText != null) healthText.gameObject.SetActive(false); // Hide the health text when the win screen is shown
             if (dotImage != null) dotImage.SetActive(false); // Hide the dot image
