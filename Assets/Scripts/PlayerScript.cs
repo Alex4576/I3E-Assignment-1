@@ -20,7 +20,6 @@ public class PlayerScript: MonoBehaviour
     Camera playerCamera; // Reference to the player's camera, used for raycasting to detect interactable objects
 
     // Player's Health
-    [Header("Player's Health")]
     [SerializeField]
     public int maxHealth = 100; // Player's current health, editable from the Unity Inspector
     private int currentHealth; // Player's current health, initialized to the maximum health
@@ -28,7 +27,6 @@ public class PlayerScript: MonoBehaviour
     [SerializeField] TextMeshProUGUI healthText; // Reference to the UI text element that displays the player's health, assigned from the Unity Inspector
     
     // Screens
-    [Header("Screens")]
     [SerializeField] GameObject loseScreen; // Reference to the game object that represents the lose screen, assigned from the Unity Inspector
     [SerializeField] GameObject winScreen; // Reference to the game object that represents the win screen, assigned from the Unity Inspector
     [SerializeField] TextMeshProUGUI finalHealth; // Reference to the UI text element that displays the player's final health on the win screen, assigned from the Unity Inspector

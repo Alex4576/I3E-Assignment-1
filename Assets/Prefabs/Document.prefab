@@ -1507,6 +1507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d0b8b26e1ec62d479103e1c0074777a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collectible
+  rotation: {x: 0, y: 100, z: 0}
   collectibleScore: 2
 --- !u!1 &3336746794569146262
 GameObject:

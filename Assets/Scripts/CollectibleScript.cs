@@ -2,6 +2,13 @@ using UnityEngine;
 
 public class Collectible : MonoBehaviour
 {
+
+    public Vector3 rotation;
+    void Update()
+    {
+        this.transform.Rotate(rotation * 1 * Time.deltaTime); // Rotate the collectible around its own axis at a speed defined by the rotation variable, creating a visual effect to make it more noticeable and appealing to the player
+    }
+
     public int collectibleScore = 0; // Store the score value of this collectible, editable from the Unity Inspector. (this allows different collectibles to be worth different amounts of points)
 
     AudioSource collectibleAudio;
