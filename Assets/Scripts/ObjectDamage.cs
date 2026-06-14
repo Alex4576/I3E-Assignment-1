@@ -1,3 +1,9 @@
+/*
+*Author: Alex
+*Date: 14/6/2026
+*Description: This script defines the behavior of damage objects in the game. It applies damage to the player when they interact with it.
+*/
+
 using UnityEngine;
 
 public class DamageObject : MonoBehaviour
