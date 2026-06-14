@@ -20,12 +20,17 @@ public class PlayerScript: MonoBehaviour
     Camera playerCamera; // Reference to the player's camera, used for raycasting to detect interactable objects
 
     // Player's Health
-    [Header("Player Health")]
+    [Header("Player's Health")]
     [SerializeField]
     public int maxHealth = 100; // Player's current health, editable from the Unity Inspector
     private int currentHealth; // Player's current health, initialized to the maximum health
 
     [SerializeField] TextMeshProUGUI healthText; // Reference to the UI text element that displays the player's health, assigned from the Unity Inspector
+    
+    // Lose Screen
+    [Header("Lose Screen")]
+    [SerializeField] GameObject LoseScreen; // Reference to the game object that represents the lose screen, assigned from the Unity Inspector
+    
     void Start()
     {
         UpdateScoreUI(); // Initialize the score display at the start of the game
@@ -60,7 +65,20 @@ public class PlayerScript: MonoBehaviour
         if (currentHealth <= 0)
         {
             Debug.Log("You died."); // Log a message when the player's health reaches 0 or below, indicating that the player has died
-            // Additional logic for player death can be added here (e.g., respawn, game over screen)
+            // Game over
+            ShowLoseScreen(); // Call a method to show the game over screen (this method would need to be implemented separately)
+        }
+    }
+
+    void ShowLoseScreen()
+    {
+        if (LoseScreen != null)
+        {
+            LoseScreen.SetActive(true);
+            if (scoreText != null) scoreText.gameObject.SetActive(false); // Hide the score text when the lose screen is shown
+            if (healthText != null) healthText.gameObject.SetActive(false); // Hide the health text when the lose screen is shown
+            
+            Time.timeScale = 0f ; // Pause the game when the lose screen is shown
         }
     }
 
