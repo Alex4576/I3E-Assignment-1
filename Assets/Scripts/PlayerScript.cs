@@ -30,7 +30,7 @@ public class PlayerScript: MonoBehaviour
     // Lose Screen
     [Header("Lose Screen")]
     [SerializeField] GameObject LoseScreen; // Reference to the game object that represents the lose screen, assigned from the Unity Inspector
-    
+    [SerializeField] GameObject dotImage; // Reference to the game object that represents the dot image, assigned from the Unity Inspector, used for guide for raycasting    
     void Start()
     {
         UpdateScoreUI(); // Initialize the score display at the start of the game
@@ -77,7 +77,7 @@ public class PlayerScript: MonoBehaviour
             LoseScreen.SetActive(true);
             if (scoreText != null) scoreText.gameObject.SetActive(false); // Hide the score text when the lose screen is shown
             if (healthText != null) healthText.gameObject.SetActive(false); // Hide the health text when the lose screen is shown
-            
+            if (dotImage != null) dotImage.SetActive(false); // Hide the dot image when the lose screen is shown
             Time.timeScale = 0f ; // Pause the game when the lose screen is shown
         }
     }
